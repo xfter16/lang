@@ -1,0 +1,35 @@
+package Hello
+import Translator
+import ClosureEvents
+import StringUtils
+import Quest
+
+/* Hello and welcome to Wurst!
+This is just a demo package. 
+You can modify it to tests things out 
+and then later delete it and create your own, new packages.
+Enjoy WurstScript? Consider starring our repo https://github.com/wurstscript/WurstScript */ 
+init
+	let object = "id,en,ru,de;q1.title,english title 1,русский title 1,;q1.description,description 2,описание 2,"
+	let translateMap = parseCSVStringToHashMap(object, ",", ";")
+	var defaultLanguage = "en"
+	let translator = new Translator(translateMap, defaultLanguage)
+	let q1 = new Quest(false)
+	q1.setTitle(translator.translate("q1.title"))
+	q1.setDescription(translator.translate("q1.description"))
+
+	EventListener.add(EVENT_PLAYER_CHAT_FILTER) ->
+		var str = GetEventPlayerChatString()
+		if str.startsWith("-lang")
+			var parsedCommand = str.split(" ")
+			let lang = parsedCommand.get(1)
+			q1.setTitle(translator.translate("q1.title", lang))
+			q1.setDescription(translator.translate("q1.description", lang))
+
+	// let translateMap = parseCSVStringToHashMap(object, ",", ";")
+	// print(translateText(translateMap, "key", "lang", "en"))
+	// print(translateText(translateMap, "q2", "lang", "en"))
+	// print(translateText(translateMap, "q2", "ru", "en"))
+	// print(translateText(translateMap, "q2", "de", "en"))
+	// print(translateText(translateMap, "q2", "qw", "3"))
+	// print(translateText(translateMap, "q3", "ru", "en"))

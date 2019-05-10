@@ -1,0 +1,1 @@
+translator.translate("q1.title", lang)

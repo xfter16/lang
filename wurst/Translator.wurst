@@ -1,0 +1,56 @@
+package Translator
+
+import HashMap
+import StringUtils
+
+// id, ru, en, de
+// q1, ru-text, en-text...
+
+public class Translator 
+    string defaultLanguage
+    HashMap<string, HashMap<string, string>> translateMap
+    construct(HashMap<string, HashMap<string, string>> translateMap, string defaultLanguage)
+        this.defaultLanguage = defaultLanguage
+        this.translateMap = translateMap
+    
+    function translate(string identificator, string language) returns string
+        return translateText(this.translateMap, identificator, language, this.defaultLanguage)
+    
+    function translate(string identificator) returns string
+        return this.translate(identificator, this.defaultLanguage)
+
+public function translateText(HashMap<string, HashMap<string, string>> translateMap, string textIdentificator, string language, string defaultLanguage) returns string
+    if(translateMap.has(textIdentificator))
+        let translates = translateMap.get(textIdentificator)
+        if(translates.has(language))
+            if(translates.get(language).length() == 0)
+                return translates.get(defaultLanguage)
+            return translates.get(language)
+        if(translates.has(defaultLanguage))
+            return translates.get(defaultLanguage)
+        print("|cffA52108ERROR: Cannot Get Text With id|r: " + textIdentificator + " and language " + defaultLanguage)
+        return "ERROR: Cannot Get Text With id|r: " + textIdentificator + " and language " + defaultLanguage
+    print("|cffA52108ERROR: Cannot Get Text With id|r: " + textIdentificator)
+    return "ERROR: Cannot Get Text With id " + textIdentificator
+
+
+
+public function parseCSVStringToHashMap(string csvString, string valueDelimiter, string lineDelimeter) returns HashMap<string, HashMap<string, string>>
+    let generalMap = new HashMap<string, HashMap<string, string>>
+    let lines = csvString.split(lineDelimeter)
+    let languages = lines.getFirst().split(valueDelimiter)
+    languages.removeAt(0)
+    lines.removeAt(0)
+    lines.forEach() (string t) ->
+        let line = t.split(valueDelimiter)
+        let id = line.getFirst()
+        line.removeAt(0)
+        let translates = line
+        let valueMap = new HashMap<string, string>
+        for i = 0 to languages.size() - 1
+            valueMap.put(languages.get(i), translates.get(i))
+        generalMap.put(id, valueMap)
+
+    return generalMap
+
+    
